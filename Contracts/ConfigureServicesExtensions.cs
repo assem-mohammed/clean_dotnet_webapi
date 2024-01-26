@@ -1,5 +1,4 @@
-﻿using Contracts.ViewModels.PurchaseOrder;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Contracts
@@ -8,7 +7,7 @@ namespace Contracts
     {
         public static IServiceCollection ConfigureContractServices(this IServiceCollection services)
         {
-            services.AddValidatorsFromAssemblyContaining<CreatePurchaseOrderDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<AbstractValidator<object>>();
 
             return services;
         }

@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Domain.EntitiesConfigurations;
+﻿using Domain.EntitiesConfigurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DbContexts
@@ -27,9 +26,5 @@ namespace Infrastructure.DbContexts
 
             base.OnModelCreating(modelBuilder);
         }
-
-        public DbSet<Vendor> Vendors { get; set; }
-        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
-        public DbSet<PurchaseOrderLine> PurchaseOrderLines { get; set; }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using Contracts.PurchaseOrderFeatures;
-using Contracts.ViewModels.PurchaseOrder;
 using FluentValidation;
+using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using Resources.ErrorLocalization;
+using System.Globalization;
 
 namespace API.Controllers
 {
@@ -9,28 +12,33 @@ namespace API.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
-        private readonly IPurchaseOrderServices _purchaseOrderServices;
+        private readonly IStringLocalizer<Error> _localizer;
+        private readonly TimezoneHandler _timezoneHandler;
 
-        public HomeController(IPurchaseOrderServices purchaseOrderServices)
+        public HomeController(IStringLocalizer<Error> localizer, TimezoneHandler timezoneHandler)
         {
-            _purchaseOrderServices = purchaseOrderServices;
+            _localizer = localizer;
+            _timezoneHandler = timezoneHandler;
         }
 
-        [HttpPost("InsertPO")]
-        public async Task<int> InsertPO(CreatePurchaseOrderDto request, IValidator<CreatePurchaseOrderDto> validator, CancellationToken ct)
+        [HttpGet("TestCulture")]
+        public object TestCulture(CancellationToken ct)
         {
-            await validator.ValidateAndThrowAsync(request);
-
-            return await _purchaseOrderServices.InsertPO(request, ct);
+            var utcDate = DateTime.UtcNow;
+            
+            var localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, TimeZoneInfo.Local);
+            
+            var timeZoneDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, TimeZoneInfo.FindSystemTimeZoneById(_timezoneHandler.TimezoneId));
+            
+            return new
+            {
+                Text = _localizer["Test"].Value,
+                UTC = utcDate,
+                Local = localDate,
+                CultureDate = timeZoneDate,
+                CultureInfo = CultureInfo.CurrentCulture.TextInfo.CultureName
+            };
         }
 
-        [HttpPost("InsertBulk")]
-        public async Task<int> InsertBulk(CancellationToken ct) => await _purchaseOrderServices.InsertBulk(ct);
-
-        [HttpGet("GetLastPurchaseOrder")]
-        public async Task<object?> GetLastPurchaseOrder(CancellationToken ct) => await _purchaseOrderServices.GetLastPurchaseOrder(ct);
-
-        [HttpGet("GetPurchaseOrders")]
-        public async Task<object?> GetPurchaseOrders(CancellationToken ct) => await _purchaseOrderServices.GetPurchaseOrders(ct);
     }
 }
