@@ -7,7 +7,7 @@ namespace Contracts
     {
         public static IServiceCollection ConfigureContractServices(this IServiceCollection services)
         {
-            services.AddValidatorsFromAssemblyContaining<AbstractValidator<object>>();
+            services.AddValidatorsFromAssemblyContaining(typeof(ConfigureServicesExtensions));
 
             return services;
         }
