@@ -12,17 +12,15 @@ namespace Infrastructure.EntitiesConfigurations
 {
     public class VendorConfigurations : IEntityTypeConfiguration<Vendor>
     {
-        private readonly TimezoneHandler timezoneHandler;
-
-        public VendorConfigurations(TimezoneHandler timezoneHandler)
-        {
-            this.timezoneHandler = timezoneHandler;
-        }
+        public VendorConfigurations(){}
         public void Configure(EntityTypeBuilder<Vendor> builder)
         {
             builder
                 .HasKey(x => x.Id)
                 .HasName("VendorCode");
+
+            builder.HasIndex(x => x.Email)
+                .IsUnique();
 
             builder
                 .Property(x => x.Id)
@@ -105,7 +103,7 @@ namespace Infrastructure.EntitiesConfigurations
                 .Property(x => x.SSOUserId)
                 .HasMaxLength(50);
 
-            builder.Property(x => x.DateCreated).HasConversion(new UTCtoLocalConverter(timezoneHandler));
+            //builder.Property(x => x.DateCreated).HasConversion(new UTCtoLocalConverter(timezoneHandler));
         }
     }
 }

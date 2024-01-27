@@ -6,14 +6,12 @@ namespace Infrastructure.DbContexts
 {
     public class ApplicationDbContext : DbContext, IAppDbContext
     {
-        private readonly TimezoneHandler timezoneHandler;
-
-        public ApplicationDbContext(DbContextOptions options,TimezoneHandler timezoneHandler) : base(options)
-        {
-            this.timezoneHandler = timezoneHandler;
-        }
+        public ApplicationDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<Vendor> Vendors { get; set; } = default!;
+
+        public async Task<int> SaveChangesAsync()
+            => await base.SaveChangesAsync();
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
@@ -28,7 +26,7 @@ namespace Infrastructure.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Configure(timezoneHandler);
+            modelBuilder.Configure();
 
             base.OnModelCreating(modelBuilder);
         }

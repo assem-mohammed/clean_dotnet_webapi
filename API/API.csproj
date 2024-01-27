@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\API.DI\API.DI.csproj" />
-    <ProjectReference Include="..\Features\Features.csproj" />
     <ProjectReference Include="..\Resources\Resources.csproj" />
   </ItemGroup>
 

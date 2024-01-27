@@ -1,10 +1,14 @@
 ﻿using Infrastructure;
+using Infrastructure.Converters.Json;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Options;
 
 namespace API.Middlewares
 {
     public class TimeZoneMiddleware
     {
         private readonly RequestDelegate _next;
+
         private ILogger<TimeZoneMiddleware> _logger { get; set; } = default!;
         public TimeZoneMiddleware(RequestDelegate next)
         {

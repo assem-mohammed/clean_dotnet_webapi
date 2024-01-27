@@ -5,9 +5,9 @@ namespace Infrastructure
 {
     public static class ConfigureEntities
     {
-        public static void Configure(this ModelBuilder modelBuilder, TimezoneHandler timezoneHandler)
+        public static void Configure(this ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new VendorConfigurations(timezoneHandler));
+            modelBuilder.ApplyConfiguration(new VendorConfigurations());
         }
     }
 }

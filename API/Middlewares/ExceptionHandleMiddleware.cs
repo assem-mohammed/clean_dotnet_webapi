@@ -36,7 +36,7 @@ public class ExceptionHandleMiddleware
             _logger?.LogError($@"---------------------------------
                                     PATH: {httpContext.Request.Path.Value}
                                     REASON: {ex.Message.Replace(Environment.NewLine, string.Empty)}
-                                    INNER EXCEPTION:{innerEx}
+                                    {innerEx}
                                     STACK TRACE: {ex.StackTrace}
                                     ---------------------------------");
 

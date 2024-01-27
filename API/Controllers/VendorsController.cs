@@ -16,20 +16,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<object> GetAllVendors()
-        {
-            return null;
-        }
+        public async Task<object> GetAllVendors(CancellationToken ct)
+            => await _vendorServices.GetAllVendors(ct);
 
         [HttpGet("{id}")]
         public async Task<object> GetVendor(string id, CancellationToken ct)
             => await _vendorServices.GetVendorById(id, ct);
 
         [HttpPost]
-        public async Task<object> InsertBulk()
-        {
-
-            return null;
-        }
+        public async Task<object> InsertBulk(CancellationToken ct)
+            => await _vendorServices.InsertBulk(ct);
     }
 }
