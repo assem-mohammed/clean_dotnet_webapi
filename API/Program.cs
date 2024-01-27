@@ -13,20 +13,7 @@ builder.Services
     .ConfigureAppServices()
     .ConfigureContractServices();
 
-builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(x =>
-    {
-        x.InvalidModelStateResponseFactory = (context) =>
-        {
-            var messages = context.ModelState.Values
-                .Where(x => x.ValidationState == ModelValidationState.Invalid)
-                .SelectMany(x => x.Errors)
-                .Select(x => x.ErrorMessage)
-                .ToList();
-
-            throw new BusinessException(messages);
-        };
-    });
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 

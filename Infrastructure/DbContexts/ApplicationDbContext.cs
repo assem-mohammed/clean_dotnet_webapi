@@ -1,18 +1,24 @@
-﻿using Domain.EntitiesConfigurations;
+﻿using Domain.Entities;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DbContexts
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext, IAppDbContext
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        private readonly TimezoneHandler timezoneHandler;
+
+        public ApplicationDbContext(DbContextOptions options,TimezoneHandler timezoneHandler) : base(options)
         {
+            this.timezoneHandler = timezoneHandler;
         }
+
+        public DbSet<Vendor> Vendors { get; set; } = default!;
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             configurationBuilder.Properties<string>()
-                .HaveMaxLength(200);
+                .HaveMaxLength(100);
 
             configurationBuilder.Properties<decimal>()
                 .HavePrecision(18, 6);
@@ -22,7 +28,7 @@ namespace Infrastructure.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Configure();
+            modelBuilder.Configure(timezoneHandler);
 
             base.OnModelCreating(modelBuilder);
         }

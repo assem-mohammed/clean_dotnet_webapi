@@ -1,6 +1,4 @@
-﻿using Contracts.PurchaseOrderFeatures;
-using FluentValidation;
-using Infrastructure;
+﻿using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Resources.ErrorLocalization;

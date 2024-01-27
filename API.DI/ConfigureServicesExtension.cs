@@ -1,6 +1,10 @@
 ﻿using API.DI.ConfigurationOptions;
+using Contracts.Shared;
+using Domain.Interfaces;
 using Infrastructure;
 using Infrastructure.DbContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +24,20 @@ namespace API.DI
             services
                 .Configure<SupportedCultureOptions>(spportedCulturConfig);
 
+            services.Configure<ApiBehaviorOptions>(x =>
+            {
+                x.InvalidModelStateResponseFactory = (context) =>
+                {
+                    var messages = context.ModelState.Values
+                        .Where(x => x.ValidationState == ModelValidationState.Invalid)
+                        .SelectMany(x => x.Errors)
+                        .Select(x => x.ErrorMessage)
+                        .ToList();
+
+                    throw new BusinessException(messages);
+                };
+            });
+
             var supportedCultures = spportedCulturConfig
                 .Get<SupportedCultureOptions>()?.Cultures!;
 
@@ -31,7 +49,7 @@ namespace API.DI
             hostBuilder.UseSerilog(logger);
 
             services.
-                AddDbContextPool<ApplicationDbContext>(opt =>
+                AddDbContext<ApplicationDbContext>(opt =>
                 {
                     opt.UseLoggerFactory(LoggerFactory.Create(x => x.AddSerilog(logger)));
                     opt.UseSqlServer(configuration.GetConnectionString("TestDb"), sqlOpt =>
@@ -40,7 +58,9 @@ namespace API.DI
                         sqlOpt.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
                         sqlOpt.MaxBatchSize(1000);
                     });
-                }, poolSize: 10);
+                });
+
+            services.AddScoped<IAppDbContext>(provider => provider.GetService<ApplicationDbContext>()!);
 
             services.AddScoped<TimezoneHandler>();
 
