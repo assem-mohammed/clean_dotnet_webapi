@@ -1,7 +1,6 @@
-﻿namespace Infrastructure
+﻿namespace Infrastructure;
+
+public class TimezoneHandler
 {
-    public class TimezoneHandler
-    {
-        public string TimezoneId { get; set; } = default!;
-    }
+    public string TimezoneId { get; set; } = default!;
 }

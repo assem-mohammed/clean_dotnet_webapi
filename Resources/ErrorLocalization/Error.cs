@@ -1,6 +1,5 @@
-﻿namespace Resources.ErrorLocalization
+﻿namespace Resources.ErrorLocalization;
+
+public class Error
 {
-    public class Error
-    {
-    }
 }

@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="OwenTypes\" />
+    <Compile Remove="OwenTypes\**" />
+    <EmbeddedResource Remove="OwenTypes\**" />
+    <None Remove="OwenTypes\**" />
   </ItemGroup>
 
   <ItemGroup>

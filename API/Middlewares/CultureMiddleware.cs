@@ -1,34 +1,33 @@
 ﻿using System.Globalization;
 
-namespace API.Middlewares
+namespace API.Middlewares;
+
+public class CultureMiddleware
 {
-    public class CultureMiddleware
+    private readonly RequestDelegate _next;
+    private ILogger<CultureMiddleware>? _logger { get; set; }
+    public CultureMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-        private ILogger<CultureMiddleware>? _logger { get; set; }
-        public CultureMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
-
-        public async Task Invoke(HttpContext httpContext, ILogger<CultureMiddleware> logger)
-        {
-            _logger = logger;
-
-            if (httpContext.Request.Headers.ContainsKey("culture"))
-            {
-                _logger.LogDebug(httpContext.Request.Headers["culture"]);
-                CultureInfo.CurrentCulture = new(httpContext.Request.Headers["culture"]!);
-                CultureInfo.CurrentUICulture = new(httpContext.Request.Headers["culture"]!);
-            }
-            await _next(httpContext);
-        }
+        _next = next;
     }
-    public static class CultureMiddlewareExtensions
+
+    public async Task Invoke(HttpContext httpContext, ILogger<CultureMiddleware> logger)
     {
-        public static IApplicationBuilder UseCultureMiddleware(this IApplicationBuilder builder)
+        _logger = logger;
+
+        if (httpContext.Request.Headers.ContainsKey("culture"))
         {
-            return builder.UseMiddleware<CultureMiddleware>();
+            _logger.LogDebug(httpContext.Request.Headers["culture"]);
+            CultureInfo.CurrentCulture = new(httpContext.Request.Headers["culture"]!);
+            CultureInfo.CurrentUICulture = new(httpContext.Request.Headers["culture"]!);
         }
+        await _next(httpContext);
+    }
+}
+public static class CultureMiddlewareExtensions
+{
+    public static IApplicationBuilder UseCultureMiddleware(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<CultureMiddleware>();
     }
 }

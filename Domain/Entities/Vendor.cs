@@ -1,61 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace Domain.Entities;
 
-namespace Domain.Entities
+public class Vendor : BaseEntity<string>
 {
-    public class Vendor : BaseEntity<string>
-    {
-        //[MaxLength(ModelConstants.LengthOf20)]
-        public string? LegacyVendorCode { get; set; }
-
-        //[MaxLength(ModelConstants.LengthOf4)]
-        public string? Group { get; set; }
-
-        //[MaxLength(ModelConstants.LengthOf15)]
-        public string? Title { get; set; }
-
-        //[Required, MaxLength(ModelConstants.LengthOf35)]
-        public string Name { get; set; } = default!;
-
-        //[MaxLength(ModelConstants.LengthOf35)]
-        public string? Name2 { get; set; }
-
-        //[MaxLength(ModelConstants.LengthOf35)]
-        public string? Name3 { get; set; }
-
-        //[MaxLength(ModelConstants.LengthOf35)]
-        public string? Name4 { get; set; }
-
-        //[Required, MaxLength(ModelConstants.LengthOf10)]
-        public string FirstSearchTerm { get; set; } = default!;
-
-        //[MaxLength(ModelConstants.LengthOf20)]
-        public string? SecondSearchTerm { get; set; }
-
-        //[Required, MaxLength(ModelConstants.LengthOf2)]
-        public string Language { get; set; } = default!;
-
-        //[MaxLength(ModelConstants.LengthOf16)]
-        public string? Telephone { get; set; }
-
-        //[Required, MaxLength(ModelConstants.LengthOf16)]
-        public string Phone { get; set; } = default!;
-
-        //[MaxLength(ModelConstants.LengthOf31)]
-        public string? FaxNumber { get; set; }
-
-        //[Required, MaxLength(ModelConstants.LengthOf241)]
-        public string Email { get; set; } = default!;
-
-        //[MaxLength(ModelConstants.LengthOf20)]
-        public string? VatRegNumber { get; set; }
-
-        //[MaxLength(ModelConstants.LengthOf4)]
-        public string? IndustryKey { get; set; }
-
-        //[MaxLength(ModelConstants.LengthOf1)]
-        public string? CentralBlock { get; set; }
-
-        //[MaxLength(ModelConstants.LengthOf50)]
-        public string? SSOUserId { get; set; }
-    }
+    public string? LegacyVendorCode { get; set; }
+    public string? Group { get; set; }
+    public string? Title { get; set; }
+    public string Name { get; set; } = default!;
+    public string? Name2 { get; set; }
+    public string? Name3 { get; set; }
+    public string? Name4 { get; set; }
+    public string FirstSearchTerm { get; set; } = default!;
+    public string? SecondSearchTerm { get; set; }
+    public string Language { get; set; } = default!;
+    public string? Telephone { get; set; }
+    public string Phone { get; set; } = default!;
+    public string? FaxNumber { get; set; }
+    public string Email { get; set; } = default!;
+    public string? VatRegNumber { get; set; }
+    public string? IndustryKey { get; set; }
+    public string? CentralBlock { get; set; }
+    public string? SSOUserId { get; set; }
 }

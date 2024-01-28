@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "Contracts\Cont
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API.DI", "API.DI\API.DI.csproj", "{B0E0CC33-91CB-4254-B5A6-EC45550DDAA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resources", "Resources\Resources.csproj", "{0C142E36-0760-4F12-96AB-0C31BAA76B7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resources", "Resources\Resources.csproj", "{0C142E36-0760-4F12-96AB-0C31BAA76B7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{F4F23769-C263-4DDB-80B1-240B81E9DCA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{0C142E36-0760-4F12-96AB-0C31BAA76B7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C142E36-0760-4F12-96AB-0C31BAA76B7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C142E36-0760-4F12-96AB-0C31BAA76B7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4F23769-C263-4DDB-80B1-240B81E9DCA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4F23769-C263-4DDB-80B1-240B81E9DCA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4F23769-C263-4DDB-80B1-240B81E9DCA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4F23769-C263-4DDB-80B1-240B81E9DCA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-﻿using Contracts.Shared;
+﻿using Shared;
 
 namespace API.Middlewares;
 public class ExceptionHandleMiddleware
