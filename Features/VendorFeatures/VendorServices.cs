@@ -6,9 +6,9 @@ using Infrastructure;
 using Infrastructure.ExtensionMethods;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Resources.ErrorLocalization;
 using Throw;
-
+using Shared.Resources.ErrorLocalization;
+using Contracts.VendorFeatures.Dtos.Create;
 namespace Features.VendorFeatures;
 
 public class VendorServices : IVendorServices
@@ -62,6 +62,26 @@ public class VendorServices : IVendorServices
 
         await _context.Vendors.AddRangeAsync(vendors);
 
-        return await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync(ct);
+    }
+
+    public async Task<CreateVendorResponse> InsertOne(CreateVendorRequest request, CancellationToken ct)
+    {
+        var vendor = new Vendor()
+        {
+            Id = request.Id,
+            Email = request.Email,
+            Phone = request.Phone,
+            FirstSearchTerm = request.FirstSearchTerm,
+            Language = request.Language,
+            ModifiedBy = "Seeding",
+            Name = request.Name
+        };
+
+        await _context.Vendors.AddAsync(vendor, ct);
+
+        await _context.SaveChangesAsync(ct);
+
+        return new CreateVendorResponse(vendor.Id);
     }
 }

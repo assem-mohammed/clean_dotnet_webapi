@@ -96,7 +96,5 @@ public class VendorConfigurations : IEntityTypeConfiguration<Vendor>
         builder
             .Property(x => x.SSOUserId)
             .HasMaxLength(50);
-
-        //builder.Property(x => x.DateCreated).HasConversion(new UTCtoLocalConverter(timezoneHandler));
     }
 }

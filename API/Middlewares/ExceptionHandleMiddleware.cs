@@ -26,6 +26,7 @@ public class ExceptionHandleMiddleware
     private async Task HandleException(Exception ex, HttpContext httpContext)
     {
         var innerEx = !string.IsNullOrEmpty(ex.InnerException?.Message) ? $"INNER EX. MSG: {ex.InnerException?.Message}" : string.Empty;
+        
         if (string.IsNullOrEmpty(innerEx))
             _logger?.LogError($@"---------------------------------
                                     {httpContext.Request.Path.Value}

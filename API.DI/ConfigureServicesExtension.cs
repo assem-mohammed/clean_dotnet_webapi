@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Builder;
 using Contracts.VendorFeatures;
 using Features.VendorFeatures;
 using FluentValidation;
+using Collector.Serilog.Enrichers.SensitiveInformation;
+using Contracts.VendorFeatures.Dtos.Create;
+using System.Text.Json.Serialization;
 namespace API.DI;
 
 public static class ConfigureServicesExtension
@@ -27,13 +30,21 @@ public static class ConfigureServicesExtension
             .Get<SupportedCultureOptions>()?.Cultures!;
 
         var logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(builder.Configuration)
-                .Enrich.FromLogContext()
-                .CreateLogger();
+            .ReadFrom.Configuration(builder.Configuration)
+            .Enrich.FromLogContext()
+            .Destructure.HasSensitiveProperties<CreateVendorRequest>(
+                myclass => myclass.Email,
+                myclass => myclass.Phone)
+            .Enrich.With(new SensitiveInformationEnricher())
+            .CreateLogger();
 
         builder.Host.UseSerilog(logger);
 
         builder.Services
+            .Configure<JsonOptions>(opt =>
+            {
+                opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            })
             .Configure<SupportedCultureOptions>(spportedCulturConfig)
             .Configure<ApiBehaviorOptions>(x =>
             {
@@ -71,7 +82,7 @@ public static class ConfigureServicesExtension
                     options.AddSupportedUICultures(supportedCultures.ToArray());
                 }
             })
-            .AddValidatorsFromAssemblyContaining(typeof(BusinessException))
+            .AddValidatorsFromAssemblyContaining(typeof(CreateVendorValidator))
             .AddScoped<IVendorServices, VendorServices>();
 
         return builder;

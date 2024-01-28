@@ -1,4 +1,6 @@
 ﻿using Contracts.VendorFeatures;
+using Contracts.VendorFeatures.Dtos.Create;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -22,7 +24,15 @@ public class VendorsController : ControllerBase
     public async Task<object> GetVendor(string id, CancellationToken ct)
         => await _vendorServices.GetVendorById(id, ct);
 
-    [HttpPost]
+    [HttpPost("InsertBulk")]
     public async Task<object> InsertBulk(CancellationToken ct)
         => await _vendorServices.InsertBulk(ct);
+
+    [HttpPost]
+    public async Task<CreateVendorResponse> InsertOne(CreateVendorRequest request, IValidator<CreateVendorRequest> validators, CancellationToken ct)
+    {
+        await validators.ValidateAndThrowAsync(request, ct);
+
+        return await _vendorServices.InsertOne(request, ct);
+    }
 }

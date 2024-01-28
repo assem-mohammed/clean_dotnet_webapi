@@ -7,5 +7,5 @@ public interface IAppDbContext
 {
     public DbSet<Vendor> Vendors { get; }
 
-    public Task<int> SaveChangesAsync();
+    public Task<int> SaveChangesAsync(CancellationToken ct);
 }

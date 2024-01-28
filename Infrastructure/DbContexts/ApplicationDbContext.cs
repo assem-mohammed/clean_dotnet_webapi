@@ -10,8 +10,8 @@ public class ApplicationDbContext : DbContext, IAppDbContext
 
     public DbSet<Vendor> Vendors { get; set; } = default!;
 
-    public async Task<int> SaveChangesAsync()
-        => await base.SaveChangesAsync();
+    public new async Task<int> SaveChangesAsync(CancellationToken ct)
+        => await base.SaveChangesAsync(ct);
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
