@@ -2,6 +2,7 @@
 
 public class BasePagedModel
 {
-    public int Size { get; set; }
+    public int Page { get; set; }
     public int Length { get; set; }
+    public string? SearchKey { get; set; }
 }

@@ -1,5 +1,5 @@
 ﻿namespace Contracts.VendorFeatures.Dtos.GetPaged;
 
-public class GetPagedRequest : BasePagedModel
+public class GetVendorsPagedRequest : BasePagedModel
 {
 }

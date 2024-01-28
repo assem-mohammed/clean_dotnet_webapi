@@ -1,9 +1,14 @@
-﻿namespace Contracts.VendorFeatures.Dtos.GetById;
+﻿using FluentValidation;
 
-public class GetByIdValidator : BaseValidator<GetByIdRequest>
+namespace Contracts.VendorFeatures.Dtos.GetById;
+
+public class GetByIdValidator : BaseValidator<GetVendorByIdRequest>
 {
     public GetByIdValidator()
     {
-
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .NotNull()
+            .Length(10);
     }
 }

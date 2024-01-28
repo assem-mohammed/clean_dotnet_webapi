@@ -1,5 +1,9 @@
 ﻿using Contracts.VendorFeatures;
+using Contracts.VendorFeatures.Dtos;
 using Contracts.VendorFeatures.Dtos.Create;
+using Contracts.VendorFeatures.Dtos.Delete;
+using Contracts.VendorFeatures.Dtos.GetById;
+using Contracts.VendorFeatures.Dtos.GetPaged;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,22 +21,38 @@ public class VendorsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<object> GetAllVendors(CancellationToken ct)
-        => await _vendorServices.GetAllVendors(ct);
+    public async Task<GetVendorsPagedResponse> GetPaged([FromQuery] GetVendorsPagedRequest request, IValidator<GetVendorsPagedRequest> validator, CancellationToken ct)
+    {
+        await validator.ValidateAndThrowAsync(request);
+
+        return await _vendorServices.GetVendorsPaged(request, ct);
+    }
 
     [HttpGet("{id}")]
-    public async Task<object> GetVendor(string id, CancellationToken ct)
-        => await _vendorServices.GetVendorById(id, ct);
+    public async Task<VendorResponse> GetVendorById([FromRoute] GetVendorByIdRequest request, IValidator<GetVendorByIdRequest> validator, CancellationToken ct)
+    {
+        await validator.ValidateAndThrowAsync(request, ct);
 
-    [HttpPost("InsertBulk")]
-    public async Task<object> InsertBulk(CancellationToken ct)
-        => await _vendorServices.InsertBulk(ct);
+        return await _vendorServices.GetVendorById(request, ct);
+    }
 
     [HttpPost]
-    public async Task<CreateVendorResponse> InsertOne(CreateVendorRequest request, IValidator<CreateVendorRequest> validators, CancellationToken ct)
+    public async Task<CreateVendorResponse> CreateVendor(CreateVendorRequest request, IValidator<CreateVendorRequest> validator, CancellationToken ct)
     {
-        await validators.ValidateAndThrowAsync(request, ct);
+        await validator.ValidateAndThrowAsync(request, ct);
 
         return await _vendorServices.InsertOne(request, ct);
     }
+
+    [HttpDelete]
+    public async Task<DeleteVendorResponse> DeleteVendor(DeleteVendorRequest request, IValidator<DeleteVendorRequest> validator, CancellationToken ct)
+    {
+        await validator.ValidateAndThrowAsync(request, ct);
+
+        return await _vendorServices.Delete(request, ct);
+    }
+
+    [HttpPost("InsertBulk")]
+    public async Task<object> InsertBulk(CancellationToken ct)
+    => await _vendorServices.InsertBulk(ct);
 }

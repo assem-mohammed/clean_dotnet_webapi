@@ -2,4 +2,5 @@
 
 public class DeleteVendorRequest
 {
+    public string Id { get; set; } = default!;
 }

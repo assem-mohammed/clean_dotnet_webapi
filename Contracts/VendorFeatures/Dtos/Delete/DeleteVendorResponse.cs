@@ -1,3 +1,3 @@
 ﻿namespace Contracts.VendorFeatures.Dtos.Delete;
 
-public record DeleteVendorResponse();
+public record DeleteVendorResponse(bool isDeleted);
