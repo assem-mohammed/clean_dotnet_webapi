@@ -6,7 +6,7 @@ using Contracts.VendorFeatures.Dtos.GetPaged;
 
 namespace Contracts.VendorFeatures;
 
-public interface IVendorServices
+public interface IVendorServices<T>
 {
     Task<VendorResponse> GetVendorById(GetVendorByIdRequest request, CancellationToken ct);
     Task<DeleteVendorResponse> Delete(DeleteVendorRequest request, CancellationToken ct);

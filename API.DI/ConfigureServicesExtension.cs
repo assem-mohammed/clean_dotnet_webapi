@@ -70,6 +70,8 @@ public static class ConfigureServicesExtension
                 });
             })
             .AddScoped<IAppDbContext>(provider => provider.GetService<ApplicationDbContext>()!)
+            .AddScoped<IDbQueries, DbQueries>()
+            .AddScoped<IDbCommands, DbCommands>()
             .AddScoped<TimezoneHandler>()
             .AddLocalization()
             .AddRequestLocalization(options =>
@@ -83,7 +85,8 @@ public static class ConfigureServicesExtension
                 }
             })
             .AddValidatorsFromAssemblyContaining(typeof(CreateVendorValidator))
-            .AddScoped<IVendorServices, VendorServices>();
+            .AddScoped<IVendorServices<IAppDbContext>, VendorServices<IAppDbContext>>()
+            .AddScoped<IVendorServices<IDbQueries>, VendorServicesDapper<IDbQueries>>();
 
         return builder;
     }

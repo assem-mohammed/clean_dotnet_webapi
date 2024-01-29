@@ -4,6 +4,8 @@ using Contracts.VendorFeatures.Dtos.Create;
 using Contracts.VendorFeatures.Dtos.Delete;
 using Contracts.VendorFeatures.Dtos.GetById;
 using Contracts.VendorFeatures.Dtos.GetPaged;
+using Domain.Interfaces;
+using Features.VendorFeatures;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +15,12 @@ namespace API.Controllers;
 [ApiController]
 public class VendorsController : ControllerBase
 {
-    private readonly IVendorServices _vendorServices;
+    private readonly IVendorServices<IDbQueries> _dapper;
+    private readonly IVendorServices<IAppDbContext> _vendorServices;
 
-    public VendorsController(IVendorServices vendorServices)
+    public VendorsController(IVendorServices<IDbQueries> dapper, IVendorServices<IAppDbContext> vendorServices)
     {
+        _dapper = dapper;
         _vendorServices = vendorServices;
     }
 
@@ -26,6 +30,14 @@ public class VendorsController : ControllerBase
         await validator.ValidateAndThrowAsync(request);
 
         return await _vendorServices.GetVendorsPaged(request, ct);
+    }
+
+    [HttpGet("GetPagedDapper")]
+    public async Task<GetVendorsPagedResponse> GetPagedDapper([FromQuery] GetVendorsPagedRequest request, IValidator<GetVendorsPagedRequest> validator, CancellationToken ct)
+    {
+        await validator.ValidateAndThrowAsync(request);
+
+        return await _dapper.GetVendorsPaged(request, ct);
     }
 
     [HttpGet("{id}")]

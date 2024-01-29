@@ -6,7 +6,7 @@ namespace Infrastructure.EntitiesConfigurations;
 
 public class VendorConfigurations : IEntityTypeConfiguration<Vendor>
 {
-    public VendorConfigurations(){}
+    public VendorConfigurations() { }
     public void Configure(EntityTypeBuilder<Vendor> builder)
     {
         builder
@@ -96,5 +96,9 @@ public class VendorConfigurations : IEntityTypeConfiguration<Vendor>
         builder
             .Property(x => x.SSOUserId)
             .HasMaxLength(50);
+
+        builder
+            .Ignore(x => x.TotalCount)
+            .Ignore(x => x.FilterCount);
     }
 }

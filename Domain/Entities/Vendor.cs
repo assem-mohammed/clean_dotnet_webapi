@@ -20,4 +20,8 @@ public class Vendor : BaseEntity<string>
     public string? IndustryKey { get; set; }
     public string? CentralBlock { get; set; }
     public string? SSOUserId { get; set; }
+
+
+    public int TotalCount { get; set; }
+    public int FilterCount { get; set; }
 }

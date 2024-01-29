@@ -14,10 +14,9 @@ using Contracts.VendorFeatures.Dtos.Delete;
 using Contracts.VendorFeatures.Dtos.GetPaged;
 using Contracts.VendorFeatures.Dtos;
 using System.Linq.Expressions;
-using System.Linq;
 namespace Features.VendorFeatures;
 
-public class VendorServices : IVendorServices
+public class VendorServices<T> : IVendorServices<T>
 {
     private readonly IAppDbContext _context;
     private readonly IStringLocalizer<Error> _localizer;
