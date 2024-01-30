@@ -27,9 +27,9 @@ public class RequestLoggerMiddleware
 
         requestContent.AppendLine("=== Request Info ===");
 
-        requestContent.AppendLine($"method = {context.Request.Method.ToUpper()}");
+        requestContent.AppendLine($"METHOD = {context.Request.Method.ToUpper()}");
 
-        requestContent.AppendLine($"path = {context.Request.Path}");
+        requestContent.AppendLine($"PATH = {context.Request.Path}");
 
         context.Request.EnableBuffering();
 
@@ -39,9 +39,9 @@ public class RequestLoggerMiddleware
 
         if (!string.IsNullOrEmpty(content))
         {
-            requestContent.AppendLine("-- body");
+            requestContent.AppendLine("-- BODY");
 
-            requestContent.AppendLine($"body = {content}");
+            requestContent.AppendLine($"{content}");
         }
 
         _logger.LogInformation(requestContent.ToString());

@@ -8,15 +8,14 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Microsoft.AspNetCore.Builder;
 using Contracts.VendorFeatures;
 using Features.VendorFeatures;
 using FluentValidation;
-using Collector.Serilog.Enrichers.SensitiveInformation;
 using Contracts.VendorFeatures.Dtos.Create;
 using System.Text.Json.Serialization;
+
 namespace API.DI;
 
 public static class ConfigureServicesExtension
@@ -31,11 +30,6 @@ public static class ConfigureServicesExtension
 
         var logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
-            .Enrich.FromLogContext()
-            .Destructure.HasSensitiveProperties<CreateVendorRequest>(
-                myclass => myclass.Email,
-                myclass => myclass.Phone)
-            .Enrich.With(new SensitiveInformationEnricher())
             .CreateLogger();
 
         builder.Host.UseSerilog(logger);
@@ -61,7 +55,7 @@ public static class ConfigureServicesExtension
             })
             .AddDbContextPool<ApplicationDbContext>(opt =>
             {
-                opt.UseLoggerFactory(LoggerFactory.Create(x => x.AddSerilog(logger)));
+                //opt.UseLoggerFactory(LoggerFactory.Create(x => x.AddSerilog(logger)));
                 opt.UseSqlServer(builder.Configuration.GetConnectionString("TestDb"), sqlOpt =>
                 {
                     sqlOpt.CommandTimeout(30);

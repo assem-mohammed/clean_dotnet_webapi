@@ -4,7 +4,6 @@ using Contracts.VendorFeatures.Dtos.Create;
 using Contracts.VendorFeatures.Dtos.Delete;
 using Contracts.VendorFeatures.Dtos.GetById;
 using Contracts.VendorFeatures.Dtos.GetPaged;
-using Dapper;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure;
@@ -12,12 +11,7 @@ using Infrastructure.ExtensionMethods;
 using Microsoft.Extensions.Localization;
 using Shared;
 using Shared.Resources.ErrorLocalization;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Throw;
 
 namespace Features.VendorFeatures

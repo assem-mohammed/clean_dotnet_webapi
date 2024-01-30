@@ -5,7 +5,6 @@ using Contracts.VendorFeatures.Dtos.Delete;
 using Contracts.VendorFeatures.Dtos.GetById;
 using Contracts.VendorFeatures.Dtos.GetPaged;
 using Domain.Interfaces;
-using Features.VendorFeatures;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
