@@ -15,6 +15,7 @@ using Features.VendorFeatures;
 using FluentValidation;
 using Contracts.VendorFeatures.Dtos.Create;
 using System.Text.Json.Serialization;
+using Serilog.Enrichers.Sensitive;
 
 namespace API.DI;
 
@@ -30,6 +31,18 @@ public static class ConfigureServicesExtension
 
         var logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
+            .Enrich.WithSensitiveDataMasking(x =>
+            {
+                x.MaskingOperators.AddRange(new List<IMaskingOperator>()
+                {
+                    new EmailAddressMaskingOperator(),
+                    new CreditCardMaskingOperator(),
+                    new IbanMaskingOperator()
+                });
+                x.MaskProperties.Add("id");
+                x.MaskProperties.Add("email");
+                x.MaskProperties.Add("password");
+            })
             .CreateLogger();
 
         builder.Host.UseSerilog(logger);

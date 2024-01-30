@@ -1,18 +1,23 @@
-﻿using System.Text;
+﻿using Infrastructure.Converters.Json;
+using Microsoft.Extensions.Logging;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace API.Middlewares;
 
 public class RequestLoggerMiddleware
 {
     private readonly RequestDelegate _next;
-    private ILogger<CultureMiddleware> _logger { get; set; } = default!;
+    private ILogger<RequestLoggerMiddleware> _logger { get; set; } = default!;
 
     public RequestLoggerMiddleware(RequestDelegate next)
     {
         _next = next;
     }
 
-    public async Task Invoke(HttpContext httpContext, ILogger<CultureMiddleware> logger)
+    public async Task Invoke(HttpContext httpContext, ILogger<RequestLoggerMiddleware> logger)
     {
         _logger = logger;
 
@@ -23,13 +28,7 @@ public class RequestLoggerMiddleware
 
     private async Task LogRequest(HttpContext context)
     {
-        var requestContent = new StringBuilder().AppendLine();
-
-        requestContent.AppendLine("=== Request Info ===");
-
-        requestContent.AppendLine($"METHOD = {context.Request.Method.ToUpper()}");
-
-        requestContent.AppendLine($"PATH = {context.Request.Path}");
+        _logger.LogInformation("{protocol} {method} {path}", context.Request.Protocol, context.Request.Method.ToUpper(), context.Request.Path);
 
         context.Request.EnableBuffering();
 
@@ -37,14 +36,12 @@ public class RequestLoggerMiddleware
 
         var content = await requestReader.ReadToEndAsync();
 
+        var options = new JsonSerializerOptions();
+
+        options.Converters.Add(new IDictionaryJsonConvert());
+
         if (!string.IsNullOrEmpty(content))
-        {
-            requestContent.AppendLine("-- BODY");
-
-            requestContent.AppendLine($"{content}");
-        }
-
-        _logger.LogInformation(requestContent.ToString());
+            _logger.LogInformation("Body {body}", JsonSerializer.Deserialize<IDictionary<string, object>>(content, options));
 
         context.Request.Body.Position = 0;
     }
