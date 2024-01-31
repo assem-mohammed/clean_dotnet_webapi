@@ -19,15 +19,14 @@ builder.ConfigureAPIServices();
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
+
 app.UseExceptionHandleMiddleware();
 
-app.UseRequestLoggerMiddleware();
+//app.UseRequestLoggerMiddleware();
+app.UseSwagger();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

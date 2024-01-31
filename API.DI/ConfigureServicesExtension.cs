@@ -16,6 +16,10 @@ using FluentValidation;
 using Contracts.VendorFeatures.Dtos.Create;
 using System.Text.Json.Serialization;
 using Serilog.Enrichers.Sensitive;
+using Serilog.Events;
+using Serilog.Formatting.Compact;
+using Serilog.Formatting.Json;
+using Serilog.Exceptions;
 
 namespace API.DI;
 
@@ -29,8 +33,9 @@ public static class ConfigureServicesExtension
         var supportedCultures = spportedCulturConfig
             .Get<SupportedCultureOptions>()?.Cultures!;
 
-        var logger = new LoggerConfiguration()
+        Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
+            .Enrich.WithExceptionDetails()
             .Enrich.WithSensitiveDataMasking(x =>
             {
                 x.MaskingOperators.AddRange(new List<IMaskingOperator>()
@@ -45,7 +50,7 @@ public static class ConfigureServicesExtension
             })
             .CreateLogger();
 
-        builder.Host.UseSerilog(logger);
+        builder.Host.UseSerilog();
 
         builder.Services
             .Configure<JsonOptions>(opt =>

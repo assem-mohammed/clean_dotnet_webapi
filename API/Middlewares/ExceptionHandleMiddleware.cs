@@ -25,21 +25,23 @@ public class ExceptionHandleMiddleware
 
     private async Task HandleException(Exception ex, HttpContext httpContext)
     {
-        var innerEx = !string.IsNullOrEmpty(ex.InnerException?.Message) ? $"INNER EX. MSG: {ex.InnerException?.Message}" : string.Empty;
-        
-        if (string.IsNullOrEmpty(innerEx))
-            _logger?.LogError($@"---------------------------------
-                                    {httpContext.Request.Path.Value}
-                                    REASON: {ex.Message.Replace(Environment.NewLine, string.Empty)}
-                                    Stack Trace: {ex.StackTrace}
-                                    ---------------------------------");
-        else
-            _logger?.LogError($@"---------------------------------
-                                    PATH: {httpContext.Request.Path.Value}
-                                    REASON: {ex.Message.Replace(Environment.NewLine, string.Empty)}
-                                    {innerEx}
-                                    STACK TRACE: {ex.StackTrace}
-                                    ---------------------------------");
+        //var innerEx = !string.IsNullOrEmpty(ex.InnerException?.Message) ? $"INNER EX. MSG: {ex.InnerException?.Message}" : string.Empty;
+
+        //if (string.IsNullOrEmpty(innerEx))
+        //    _logger?.LogError($@"---------------------------------
+        //                            {httpContext.Request.Path.Value}
+        //                            REASON: {ex.Message.Replace(Environment.NewLine, string.Empty)}
+        //                            Stack Trace: {ex.StackTrace}
+        //                            ---------------------------------");
+        //else
+        //    _logger?.LogError($@"---------------------------------
+        //                            PATH: {httpContext.Request.Path.Value}
+        //                            REASON: {ex.Message.Replace(Environment.NewLine, string.Empty)}
+        //                            {innerEx}
+        //                            STACK TRACE: {ex.StackTrace}
+        //                            ---------------------------------");
+
+        _logger?.LogError(ex, ex.Message);
 
         if (ex is BusinessException)
         {
