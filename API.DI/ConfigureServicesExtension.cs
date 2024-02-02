@@ -16,9 +16,6 @@ using FluentValidation;
 using Contracts.VendorFeatures.Dtos.Create;
 using System.Text.Json.Serialization;
 using Serilog.Enrichers.Sensitive;
-using Serilog.Events;
-using Serilog.Formatting.Compact;
-using Serilog.Formatting.Json;
 using Serilog.Exceptions;
 
 namespace API.DI;

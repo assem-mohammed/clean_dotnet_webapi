@@ -1,6 +1,7 @@
 using API.Middlewares;
 using API.DI;
 using API.Configurations;
+using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services
 
 builder.Services
     .AddEndpointsApiExplorer()
+    .AddResponseCaching()
     .AddSwaggerGen(x =>
     {
         x.OperationFilter<AddCultureHeaderParameters>();
@@ -19,11 +21,10 @@ builder.ConfigureAPIServices();
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
+app.UseRequestLoggerMiddleware();
 
 app.UseExceptionHandleMiddleware();
 
-//app.UseRequestLoggerMiddleware();
 app.UseSwagger();
 
 app.UseSwaggerUI();
@@ -37,5 +38,7 @@ app.UseTimeZoneMiddleware();
 app.UseCultureMiddleware();
 
 app.MapControllers();
+
+app.UseResponseCaching();
 
 app.Run();

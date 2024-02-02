@@ -39,8 +39,9 @@ public class VendorsController : ControllerBase
         return await _dapper.GetVendorsPaged(request, ct);
     }
 
-    [HttpGet("{id}")]
-    public async Task<VendorResponse> GetVendorById([FromRoute] GetVendorByIdRequest request, IValidator<GetVendorByIdRequest> validator, CancellationToken ct)
+    [HttpGet("{Id}")]
+    [ResponseCache(Duration = 60, VaryByHeader = "culture,time-zone", Location = ResponseCacheLocation.Client)]
+    public async Task<VendorResponse> GetVendorById([FromRoute]GetVendorByIdRequest request, IValidator<GetVendorByIdRequest> validator, CancellationToken ct)
     {
         await validator.ValidateAndThrowAsync(request, ct);
 
