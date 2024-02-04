@@ -5,9 +5,8 @@ namespace Infrastructure.Converters.Json;
 
 public class DateTimeConverter : JsonConverter<DateTime>
 {
-    private readonly TimezoneHandler timezoneHandler;
-
-    public DateTimeConverter(TimezoneHandler timezoneHandler)
+    private readonly TimezoneHandler? timezoneHandler;
+    public DateTimeConverter(TimezoneHandler? timezoneHandler = null)
     {
         this.timezoneHandler = timezoneHandler;
     }
@@ -18,6 +17,10 @@ public class DateTimeConverter : JsonConverter<DateTime>
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
     {
-        writer.WriteStringValue(TimeZoneInfo.ConvertTimeFromUtc(value, TimeZoneInfo.FindSystemTimeZoneById(timezoneHandler.TimezoneId)).ToString());
+        //writer.WriteStringValue(value.ToString("dd-MM-yyyy HH:mm"));
+        if (timezoneHandler != null)
+            writer.WriteStringValue(TimeZoneInfo.ConvertTimeFromUtc(value, TimeZoneInfo.FindSystemTimeZoneById(timezoneHandler.TimezoneId)).ToString());
+        else
+            writer.WriteStringValue(value.ToString());
     }
 }

@@ -17,6 +17,7 @@ using Contracts.VendorFeatures.Dtos.Create;
 using System.Text.Json.Serialization;
 using Serilog.Enrichers.Sensitive;
 using Serilog.Exceptions;
+using Infrastructure.Converters.Json;
 
 namespace API.DI;
 
@@ -53,6 +54,7 @@ public static class ConfigureServicesExtension
             .Configure<JsonOptions>(opt =>
             {
                 opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                opt.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
             })
             .Configure<SupportedCultureOptions>(spportedCulturConfig)
             .Configure<ApiBehaviorOptions>(x =>
