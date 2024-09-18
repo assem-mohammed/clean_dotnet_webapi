@@ -6,11 +6,9 @@ using System.Data;
 
 namespace Infrastructure.DbContexts
 {
-    public class DbQueries : IDbQueries
+    public class DbQueries(IConfiguration configuration) : IDbQueries
     {
-        private readonly IDbConnection connection;
-
-        public DbQueries(IConfiguration configuration) => connection = new SqlConnection(configuration.GetConnectionString("TestDb"));
+        private readonly SqlConnection connection = new(configuration.GetConnectionString("TestDb"));
 
         public async Task<IReadOnlyList<T>> QueryAsync<T>(string sql, object? param = null, IDbTransaction? transaction = null, CancellationToken cancellationToken = default)
         {
@@ -31,6 +29,6 @@ namespace Infrastructure.DbContexts
             return await connection.QuerySingleAsync<T>(sql, param, transaction);
         }
 
-        public void Dispose() => connection.Dispose();
+        void IDisposable.Dispose() => GC.SuppressFinalize(this);
     }
 }

@@ -5,10 +5,8 @@ using System.Data;
 
 namespace Infrastructure.DbContexts;
 
-public class ApplicationDbContext : DbContext, IAppDbContext
+public class ApplicationDbContext(DbContextOptions options) : DbContext(options), IAppDbContext
 {
-    public ApplicationDbContext(DbContextOptions options) : base(options) { }
-
     public IDbConnection Connection => Database.GetDbConnection();
 
     public DbSet<Vendor> Vendors { get; set; } = default!;

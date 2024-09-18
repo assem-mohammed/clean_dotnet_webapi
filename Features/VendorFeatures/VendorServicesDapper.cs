@@ -16,23 +16,17 @@ using Throw;
 
 namespace Features.VendorFeatures
 {
-    public class VendorServicesDapper<T> : IVendorServices<T>
+    public class VendorServicesDapper<T>(IDbQueries context, IStringLocalizer<Error> localizer, TimezoneHandler timezoneHandler) : IVendorServices<T>
     {
-        private readonly IDbQueries _context;
-        private readonly IStringLocalizer<Error> _localizer;
-        private readonly Func<Vendor, VendorResponse> vendorExpression;
-
-        public VendorServicesDapper(IDbQueries context, IStringLocalizer<Error> localizer, TimezoneHandler timezoneHandler)
-        {
-            _context = context;
-            _localizer = localizer;
-            vendorExpression = vendor => new VendorResponse(vendor.Id, vendor.Name, vendor.Email, vendor.Phone, vendor.Language, vendor.FirstSearchTerm,
+        private readonly IDbQueries _context = context;
+        private readonly IStringLocalizer<Error> _localizer = localizer;
+        private readonly Func<Vendor, VendorResponse> vendorExpression = vendor => new VendorResponse(vendor.Id, vendor.Name, vendor.Email, vendor.Phone, vendor.Language, vendor.FirstSearchTerm,
             vendor.DateCreated.ConvertUTCToLocalTime(timezoneHandler), vendor.ModifiedBy, vendor.CentralBlock,
             vendor.DateRemoved.ConvertUTCToLocalTime(timezoneHandler),
             vendor.DateUpdated.ConvertUTCToLocalTime(timezoneHandler), vendor.FaxNumber, vendor.SecondSearchTerm, vendor.Group,
             vendor.IndustryKey, vendor.IsActive, vendor.IsDeleted, vendor.LegacyVendorCode, vendor.Name2,
             vendor.Name3, vendor.Name4, vendor.SSOUserId, vendor.Telephone, vendor.Title, vendor.VatRegNumber);
-        }
+
         public Task<DeleteVendorResponse> Delete(DeleteVendorRequest request, CancellationToken ct)
         {
             throw new NotImplementedException();
@@ -42,7 +36,7 @@ namespace Features.VendorFeatures
         {
             string query = @$"SELECT TOP 1 * FROM Vendors WHERE VendorCode = '{request.Id}'";
 
-            var vendor = await _context.QueryAsync<Vendor>(query);
+            var vendor = await _context.QueryAsync<Vendor>(query, cancellationToken: ct);
 
             vendor.ThrowIfNull(_ => new BusinessException(_localizer["VendotNotFoundEx"]));
 
@@ -53,21 +47,23 @@ namespace Features.VendorFeatures
 
         public async Task<GetVendorsPagedResponse> GetVendorsPaged(GetVendorsPagedRequest request, CancellationToken ct)
         {
-            request.SearchKey = string.IsNullOrEmpty(request.SearchKey) ? "" : request.SearchKey;
+            request.Search ??= new Contracts.Search();
+
+            request.Search.Value = string.IsNullOrEmpty(request.Search.Value) ? "" : request.Search.Value;
 
             string query = @$"SELECT *,COUNT(*) OVER() FilterCount FROM 
                             (
 	                            SELECT *,COUNT(*) OVER() TotalCount FROM vendors
                             )data_total_cnt
-                            WHERE [Name] LIKE '%{request.SearchKey}%'
+                            WHERE [Name] LIKE '%{request.Search.Value}%'
                             ORDER BY DateCreated
-                            OFFSET {request.Page} ROWS
+                            OFFSET {request.Start} ROWS
                             FETCH NEXT {request.Length} ROWS ONLY;";
 
-            var vendors = await _context.QueryAsync<Vendor>(query);
+            var vendors = await _context.QueryAsync<Vendor>(query, cancellationToken: ct);
 
             if (vendors == null || !vendors.Any())
-                return new GetVendorsPagedResponse(new List<VendorResponse>(), 0, 0);
+                return new GetVendorsPagedResponse([], 0, 0);
 
             var counts = vendors.Select(x => new { x.TotalCount, x.FilterCount }).First();
 

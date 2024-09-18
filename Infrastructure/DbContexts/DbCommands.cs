@@ -4,12 +4,8 @@ using System.Data;
 
 namespace Infrastructure.DbContexts
 {
-    public class DbCommands : IDbCommands
+    public class DbCommands(IAppDbContext context) : IDbCommands
     {
-        private readonly IAppDbContext context;
-
-        public DbCommands(IAppDbContext context) => this.context = context;
-
         public async Task<int> ExecuteAsync(string sql, object? param = null, IDbTransaction? transaction = null, CancellationToken cancellationToken = default)
         {
             return await context.Connection.ExecuteAsync(sql, param, transaction);
@@ -36,6 +32,6 @@ namespace Infrastructure.DbContexts
             return item!;
         }
 
-        public void Dispose() => context.Connection.Dispose();
+        void IDisposable.Dispose() => GC.SuppressFinalize(this);
     }
 }

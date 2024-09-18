@@ -7,45 +7,46 @@ using Contracts.VendorFeatures.Dtos.GetPaged;
 using Domain.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-
+using SlidingRabbit.Producer;
 namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class VendorsController : ControllerBase
+public class VendorsController(IMessageProducer messageProducer, IVendorServices<IDbQueries> dapper, IVendorServices<IAppDbContext> vendorServices) : ControllerBase
 {
-    private readonly IVendorServices<IDbQueries> _dapper;
-    private readonly IVendorServices<IAppDbContext> _vendorServices;
-
-    public VendorsController(IVendorServices<IDbQueries> dapper, IVendorServices<IAppDbContext> vendorServices)
+    [HttpPost(nameof(TestMQ))]
+    public void TestMQ()
     {
-        _dapper = dapper;
-        _vendorServices = vendorServices;
+        messageProducer.SendMessage(new { id = 10 });
     }
 
-    [HttpGet]
-    public async Task<GetVendorsPagedResponse> GetPaged([FromQuery] GetVendorsPagedRequest request, IValidator<GetVendorsPagedRequest> validator, CancellationToken ct)
-    {
-        await validator.ValidateAndThrowAsync(request);
 
-        return await _vendorServices.GetVendorsPaged(request, ct);
+
+    [HttpPost(nameof(GetPaged))]
+    public async Task<GetVendorsPagedResponse> GetPaged([FromBody] GetVendorsPagedRequest request, IValidator<GetVendorsPagedRequest> validator, CancellationToken ct)
+    {
+        await validator.ValidateAndThrowAsync(request, cancellationToken: ct);
+
+        messageProducer.SendMessage(request);
+
+        return await vendorServices.GetVendorsPaged(request, ct);
     }
 
     [HttpGet("GetPagedDapper")]
     public async Task<GetVendorsPagedResponse> GetPagedDapper([FromQuery] GetVendorsPagedRequest request, IValidator<GetVendorsPagedRequest> validator, CancellationToken ct)
     {
-        await validator.ValidateAndThrowAsync(request);
+        await validator.ValidateAndThrowAsync(request, cancellationToken: ct);
 
-        return await _dapper.GetVendorsPaged(request, ct);
+        return await dapper.GetVendorsPaged(request, ct);
     }
 
-    [HttpGet("{Id}")]
+    [HttpGet($"{nameof(request.Id)}")]
     [ResponseCache(Duration = 60, VaryByHeader = "culture,time-zone", Location = ResponseCacheLocation.Client)]
-    public async Task<VendorResponse> GetVendorById([FromRoute]GetVendorByIdRequest request, IValidator<GetVendorByIdRequest> validator, CancellationToken ct)
+    public async Task<VendorResponse> GetVendorById([FromRoute] GetVendorByIdRequest request, IValidator<GetVendorByIdRequest> validator, CancellationToken ct)
     {
         await validator.ValidateAndThrowAsync(request, ct);
 
-        return await _vendorServices.GetVendorById(request, ct);
+        return await vendorServices.GetVendorById(request, ct);
     }
 
     [HttpPost]
@@ -53,7 +54,7 @@ public class VendorsController : ControllerBase
     {
         await validator.ValidateAndThrowAsync(request, ct);
 
-        return await _vendorServices.InsertOne(request, ct);
+        return await vendorServices.InsertOne(request, ct);
     }
 
     [HttpDelete]
@@ -61,10 +62,10 @@ public class VendorsController : ControllerBase
     {
         await validator.ValidateAndThrowAsync(request, ct);
 
-        return await _vendorServices.Delete(request, ct);
+        return await vendorServices.Delete(request, ct);
     }
 
     [HttpPost("InsertBulk")]
     public async Task<object> InsertBulk(CancellationToken ct)
-    => await _vendorServices.InsertBulk(ct);
+    => await vendorServices.InsertBulk(ct);
 }
